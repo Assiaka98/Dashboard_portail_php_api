@@ -1,6 +1,7 @@
 {
-  "name": "theboomer/gestion-utilisateur",
-  "autoload": {
-    "psr-4": {"App\\": "src/"}
-  }
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
 }
