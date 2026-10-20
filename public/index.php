@@ -7,12 +7,12 @@ use App\Controllers\UserController;
 $config = require __DIR__ . '/../config/config.php';
 
 // Route très simple pour l'instant
-$uri = $_SERVER['REQUEST_URI'];
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = rtrim($uri, '/');
 
-if ($uri === '/' || str_contains($uri, '/users')) {
+if ($uri === '' || $uri === '/' || $uri === '/projets/Gestion_Utilisateur_V2/public' || str_contains($uri, '/users') || str_contains($uri, '/public')) {
     $controller = new UserController();
     $controller->index();
 } else {
-    echo "404 - Page non trouvée";
+    echo "404 - Page non trouvée - URI: " . $uri;
 }
-

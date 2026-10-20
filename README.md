@@ -1,23 +1,26 @@
-# Gestion Utilisateur - Architecture MVC
+# Dashboard Portail - Systalink TEHORA
+# Ancien projet: Gestion Utilisateur - Architecture MVC
 
-Système de gestion d'utilisateurs sécurisé, refactorisé d'une architecture PHP procédurale legacy vers une architecture MVC propre.
+> Évolution majeure : Passage d'une simple gestion d'utilisateurs à un Dashboard Portail complet pour TEHORA.
 
-### Stack Technique
-- PHP 8+, Composer (PSR-4 Autoload)
-- PDO, MySQL
-- Authentification par rôles (Admin / Utilisateur)
-- Gestion des archives, pagination
+### Code de soumission : XJCECAYV (TerangaCode)
 
-### Architecture du Projet
-- `public/` : Point d'entrée unique (front controller)
-- `src/Controllers/` : Logique métier (UserController, AuthController)
-- `src/Models/` : Modèles de données
-- `src/Core/` : Database, Router
-- `views/`, `routes/`, `config/`
+## Architecture du Projet - Dashboard Portail
 
-### Installation
+Le projet a évolué vers une architecture portail modulaire :
+
+- `public/` : Point d'entrée unique (front controller) - Lancement du portail
+- `src/Controllers/` : Logique métier du Dashboard (UserController, AuthController, DashboardController, PostController)
+- `src/Models/` : Modèles de données Portail (User, Post, Stats)
+- `src/Core/` : Coeur du système - Database, Router
+- `views/` , `routes/` , `config/` , `database/` , `frontend/`
+
+Cette architecture permet d'étendre facilement vers les modules TEHORA (stats, posts, utilisateurs).
+
+## Installation - Dashboard Portail
+
 ```bash
 composer install
 # Configurer la BDD dans config/config.php
-# Importer useri.sql
+# Importer user.sql et les nouvelles tables portail
 php -S localhost:8000 -t public
