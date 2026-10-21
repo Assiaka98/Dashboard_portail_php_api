@@ -19,7 +19,9 @@ try {
         $clean_users[] = [
             'id' => (int)$u['id'],
             'nom' => $u['nom'],
-            'email' => $u['email']
+            `prenom` => $u['prenom'],
+            'email' => $u['email'],
+            `role` => $u['role']
         ];
     }
 
