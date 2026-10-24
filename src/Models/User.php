@@ -4,17 +4,25 @@ use App\Core\Database;
 use PDO;
 //On dit à PHP où se trouve le fichier et on appelle ta connexion Database.php + PDO (l'outil sécurisé pour parler à MySQL).
 class User {
-    public static function all() {
+public static function all() {
+    $db = Database::getInstance();
+    $stmt = $db->query("SELECT * FROM users WHERE etat = 1 OR etat = 2");
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+}
+    public static function find($id) {
         $db = Database::getInstance();
-        return $db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ? AND date_archive IS NULL");
+        $stmt->execute([$id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
-    //il va chercher TOUS les utilisateurs.
+    //il va chercher TOUS les utilisateurs actifs.
     //SELECT * FROM users = donne-moi tout dans la table users. fetchAll = ramène tout sous forme de tableau
-    public static function delete($id) {
-        $db = Database::getInstance();
-        $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
-        return $stmt->execute([$id]);
-    }
+    public static function archive($id) {
+    $db = Database::getInstance();
+    // On met à jour l'état (par exemple 0 pour inactif) et on enregistre la date du jour
+    $stmt = $db->prepare("UPDATE users SET etat = 0, date_archive = NOW() WHERE id = ?");
+    return $stmt->execute([$id]);
+}
     /*supprime un user. 
     prepare("... ?") + execute([$id]) = sécurité. Ça évite les injections SQL. 
     Si un hacker met 1 OR 1=1, ça ne supprimera pas toute la base. Le ? protège.*/
