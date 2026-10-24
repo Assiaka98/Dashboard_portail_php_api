@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from './services/user';
 
@@ -7,76 +7,69 @@ import { UserService } from './services/user';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App implements OnInit {
   users: any[] = [];
   errorMessage: string = '';
-
-  // État de la popup de confirmation
   isModalOpen: boolean = false;
-  userToArchiveId: number | null = null;
+  selectedUserId: number | null = null;
+  modalAction: 'archive' | 'unarchive' = 'archive';
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
-loadUsers(): void {
+  loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (response: any) => {
-        console.log('Réponse brute de l’API :', response);
         this.users = Array.isArray(response) ? response : (response.data || []);
         console.log('Tableau final this.users :', this.users);
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         console.error('Erreur lors du chargement des utilisateurs', error);
         this.errorMessage = 'Impossible de charger les utilisateurs depuis le serveur PHP.';
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Ouvrir la popup moderne au lieu de confirm()
-  openArchiveModal(id: number): void {
-    this.userToArchiveId = id;
-    this.isModalOpen = true;
+  toggleRole(user: any): void {
+    user.role_etat = user.role_etat == 2 ? 1 : 2;
+    this.cdr.detectChanges();
   }
 
-  // Fermer la popup
+  openModal(userId: number, action: 'archive' | 'unarchive'): void {
+    this.selectedUserId = userId;
+    this.modalAction = action;
+    this.isModalOpen = true;
+    this.cdr.detectChanges();
+  }
+
   closeModal(): void {
     this.isModalOpen = false;
-    this.userToArchiveId = null;
+    this.selectedUserId = null;
+    this.cdr.detectChanges();
   }
 
-  // Confirmer l'archivage depuis la popup
-  confirmArchive(): void {
-    if (this.userToArchiveId !== null) {
-      this.userService.archiveUser(this.userToArchiveId).subscribe({
-        next: () => {
-          this.closeModal();
-          this.loadUsers();
-        },
-        error: (error: any) => {
-          console.error("Erreur lors de l'archivage", error);
-        }
-      });
+  confirmAction(): void {
+    if (this.selectedUserId === null) return;
+
+    if (this.modalAction === 'archive') {
+      console.log('Archivage de l’utilisateur ID :', this.selectedUserId);
+      // TODO: Appel API pour archiver
+    } else {
+      console.log('Désarchivage de l’utilisateur ID :', this.selectedUserId);
+      // TODO: Appel API pour désarchiver
     }
-  }
 
-  // Basculer le rôle (Admin / User)
-toggleRole(user: any): void {
-    // Convertit en nombre pour éviter les conflits entre string et number
-    const currentRole = Number(user.role_etat);
-    const newRoleEtat = currentRole === 2 ? 1 : 2;
-
-    this.userService.updateUserRole(user.id, newRoleEtat).subscribe({
-      next: () => {
-        this.loadUsers(); // Recharge la liste pour refléter le nouveau rôle
-      },
-      error: (error: any) => {
-        console.error("Erreur lors de la mise à jour du rôle", error);
-      }
-    });
+    this.closeModal();
+    this.loadUsers();
   }
 }
