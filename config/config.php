@@ -1,9 +1,9 @@
 <?php
 $GLOBALS['DB_CONFIG'] = [
-    'db_host' => 'localhost',
+    'db_host' => '127.0.0.1',
     'db_name' => 'gestion_utilisateurs',
-    'db_user' => 'gestion',
-    'db_pass' => 'gestion123',
+    'db_user' => 'root',
+    'db_pass' => '',
     'db_charset' => 'utf8mb4',
     'db_options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

@@ -1,0 +1,58 @@
+<div class="dashboard-container">
+  <h2>Tableau de bord - Gestion des Utilisateurs</h2>
+
+  <div *ngIf="errorMessage" class="error-msg">
+    {{ errorMessage }}
+  </div>
+
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Matricule</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Rôle (Admin)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Affichage des utilisateurs -->
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.matricule }}</td>
+        <td>{{ user.nom }}</td>
+        <td>{{ user.prenom }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" [checked]="user.role_etat == 2" (change)="toggleRole(user)">
+            <span class="slider round"></span>
+          </label>
+          <span class="role-label">{{ user.role_etat == 2 ? 'Admin' : 'Utilisateur' }}</span>
+        </td>
+        <td>
+          <button class="btn-archive" (click)="openArchiveModal(user.id)">Archiver</button>
+        </td>
+      </tr>
+
+      <!-- Message si aucun utilisateur n'est présent -->
+      <tr *ngIf="!users || users.length === 0">
+        <td colspan="7" class="no-data">Aucun utilisateur trouvé.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Popup Modale Moderne -->
+<div class="modal-overlay" *ngIf="isModalOpen">
+  <div class="modal-card">
+    <h3>Confirmation d'archivage</h3>
+    <p>Voulez-vous vraiment archiver cet utilisateur ?</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeModal()">Annuler</button>
+      <button class="btn-confirm" (click)="confirmArchive()">Archiver</button>
+    </div>
+  </div>
+</div>

@@ -1,18 +1,29 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-session_start();
+/**
+ * Point d'entrée unique (Front Controller) de l'API PHP pour Angular
+ */
 
-use App\Controllers\UserController;
+// 1. Gestion des en-têtes CORS (Permet à Angular sur http://localhost:4200 de communiquer avec PHP)
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
-$config = require __DIR__ . '/../config/config.php';
-
-// Route très simple pour l'instant
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = rtrim($uri, '/');
-
-if ($uri === '' || $uri === '/' || $uri === '/projets/Gestion_Utilisateur_V2/public' || str_contains($uri, '/users') || str_contains($uri, '/public')) {
-    $controller = new UserController();
-    $controller->index();
-} else {
-    echo "404 - Page non trouvée - URI: " . $uri;
+// Réponse immédiate aux requêtes de pré-contrôle (Preflight OPTIONS du navigateur)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
+
+// 2. Chargement automatique des classes via Composer (pour les namespaces App\...)
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// 3. Initialisation du Routeur
+use App\Core\Router;
+
+$router = new Router();
+
+// 4. Inclusion des définitions de routes API
+require_once __DIR__ . '/../routes/api.php';
+
+// 5. Dispatch de la requête entrante
+$router->dispatch();

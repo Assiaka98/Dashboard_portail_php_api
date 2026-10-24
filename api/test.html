@@ -1,8 +1,0 @@
-<!DOCTYPE html><html><body>
-<h2>Test API Dashboard</h2>
-<button onclick="test('users.php')">Test /api/users.php</button>
-<button onclick="test('stats.php')">Test /api/stats.php</button>
-<pre id="out">En attente...</pre>
-<script>
-function test(f){ fetch(f).then(r=>r.text()).then(t=>{ document.getElementById('out').textContent = f+" :\n"+t.substring(0,2000); console.log(t); }); }
-</script></body></html>

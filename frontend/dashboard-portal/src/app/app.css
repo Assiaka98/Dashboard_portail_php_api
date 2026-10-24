@@ -1,0 +1,165 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
+  margin: 0;
+}
+
+.dashboard-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.user-table th, .user-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.user-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+}
+
+.btn-archive {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-archive:hover {
+  background-color: #d62828;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+/* Style du Switch Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 22px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2a9d8f;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.role-label {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Style de la Modale Popup */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  text-align: center;
+}
+
+.modal-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.modal-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancel {
+  background-color: #e9ecef;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #495057;
+  font-weight: 500;
+}
+
+.btn-confirm {
+  background-color: #e63946;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: 500;
+}
