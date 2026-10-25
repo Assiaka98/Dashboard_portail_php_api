@@ -6,29 +6,22 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Activer le module de réécriture d'URL
 RUN a2enmod rewrite
 
-# Configuration complète d'Apache pour le dossier public et le routage MVC
-RUN echo '<VirtualHost *:80>\n\
-    ServerAdmin webmaster@localhost\n\
-    DocumentRoot /var/www/html/public\n\
-    DirectoryIndex index.php\n\
-    <Directory /var/www/html/public>\n\
-        Options Indexes FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-        \n\
-        RewriteEngine On\n\
-        RewriteCond %{REQUEST_FILENAME} !-f\n\
-        RewriteCond %{REQUEST_FILENAME} !-d\n\
-        RewriteRule ^(.*)$ index.php [QSA,L]\n\
-    </Directory>\n\
-    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
-    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+# Rediriger proprement le DocumentRoot vers le dossier public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Autoriser explicitement les fichiers .htaccess et l'accès global
+RUN echo '<Directory /var/www/html/public/>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
 
 # Copier tous les fichiers du projet dans le conteneur
 COPY . /var/www/html/
 
-# Donner les bonnes permissions à l'utilisateur d'Apache
+# Assurer les bonnes permissions pour l'utilisateur web
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
