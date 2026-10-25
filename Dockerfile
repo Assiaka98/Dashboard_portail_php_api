@@ -6,16 +6,16 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Activer le module de réécriture d'URL
 RUN a2enmod rewrite
 
-# Configurer Apache, pointer vers /public et injecter les règles de réécriture directement
+# Configuration complète d'Apache pour le dossier public et le routage MVC
 RUN echo '<VirtualHost *:80>\n\
     ServerAdmin webmaster@localhost\n\
     DocumentRoot /var/www/html/public\n\
+    DirectoryIndex index.php\n\
     <Directory /var/www/html/public>\n\
         Options Indexes FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
         \n\
-        # Redirection MVC native\n\
         RewriteEngine On\n\
         RewriteCond %{REQUEST_FILENAME} !-f\n\
         RewriteCond %{REQUEST_FILENAME} !-d\n\
