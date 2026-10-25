@@ -4,10 +4,11 @@ use App\Core\Database;
 use PDO;
 //On dit à PHP où se trouve le fichier et on appelle ta connexion Database.php + PDO (l'outil sécurisé pour parler à MySQL).
 class User {
-public static function all() {
+public static function getAll() {
     $db = Database::getInstance();
-    $stmt = $db->query("SELECT * FROM users WHERE etat = 1 OR etat = 2");
-    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    $stmt = $db->prepare("SELECT * FROM users");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
     public static function find($id) {
         $db = Database::getInstance();

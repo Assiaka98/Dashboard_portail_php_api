@@ -5,24 +5,23 @@ use App\Models\User;
 
 class ApiUserController {
     // ... (votre méthode index existante)
-    public function index() {
-    header('Content-Type: application/json; charset=UTF-8');
+public function index() {
+    header('Content-Type: application/json; charset=utf-8');
     try {
-        $users = User::all(); // Récupère tous les utilisateurs actifs via le modèle
-
+        $users = User::getAll(); // Récupère tous les utilisateurs
         echo json_encode([
-            'status' => 'success',
-            'data' => $users
+            "status" => "success",
+            "data" => $users
         ], JSON_UNESCAPED_UNICODE);
     } catch (\Exception $e) {
         http_response_code(500);
         echo json_encode([
-            'status' => 'error',
-            'message' => $e->getMessage()
+            "status" => "error",
+            "message" => $e->getMessage()
         ], JSON_UNESCAPED_UNICODE);
     }
     exit;
-}   
+} 
     public function show($id) {
         header('Content-Type: application/json; charset=UTF-8');
         try {
