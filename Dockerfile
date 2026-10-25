@@ -6,24 +6,23 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Activer le module de réécriture d'URL (indispensable pour le MVC)
 RUN a2enmod rewrite
 
-# Définir le DocumentRoot d'Apache sur /var/www/html 
-# (Remplacez par /var/www/html/public si votre index.php est dans un sous-dossier public)
-ENV APACHE_DOCUMENT_ROOT /var/www/html
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Forcer Apache à pointer vers /var/www/html et autoriser les accès complets (.htaccess)
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        Options Indexes FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Autoriser les fichiers .htaccess et l'accès global (résout l'erreur 403)
-RUN echo '<Directory /var/www/html/>\n\
-    Options Indexes FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/override.conf && \
-a2enconf override
-
-# Copier les fichiers du projet dans le conteneur
+# Copier tous les fichiers du projet dans le dossier web du conteneur
 COPY . /var/www/html/
 
-# Assurer les bonnes permissions pour le serveur web
+# Donner les bonnes permissions à l'utilisateur d'Apache
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
