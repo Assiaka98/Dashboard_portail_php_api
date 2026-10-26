@@ -18,10 +18,10 @@ RUN echo '<Directory /var/www/html/public/>\n\
     Require all granted\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
-# Copier tous les fichiers du projet dans le conteneur
+# Copier les fichiers du projet
 COPY . /var/www/html/
 
-# Assurer les bonnes permissions pour l'utilisateur web
-RUN chown -R www-data:www-data /var/www/html
+# Ajuster les permissions uniquement si nécessaire (ex: dossier de logs ou uploads si existant)
+RUN chown -R www-data:www-data /var/www/html/public
 
 EXPOSE 80

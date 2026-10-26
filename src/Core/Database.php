@@ -18,7 +18,10 @@ class Database {
             $config = $GLOBALS['DB_CONFIG'];
             
             // Construction du DSN avec le port
-            $dsn = "mysql:host={$config['db_host']};port={$config['db_port']};dbname={$config['db_name']};charset={$config['db_charset']}";
+            $dsn = "mysql:host={$config['db_host']};
+            port={$config['db_port']};
+            dbname={$config['db_name']};
+            charset={$config['db_charset']}";
             
             try {
                 self::$instance = new PDO($dsn, $config['db_user'], $config['db_pass'], $config['db_options']);
