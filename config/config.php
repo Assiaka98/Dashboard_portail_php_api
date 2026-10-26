@@ -1,9 +1,12 @@
 <?php
+$dbHost = getenv('DB_HOST') ?: 'gestion-utilisateurs';
+$dbPort = getenv('DB_PORT') ?: '3306';
+
 $GLOBALS['DB_CONFIG'] = [
-    'db_host' => getenv('DB_HOST') ?: 'gestion-utilisateurs',
-    'db_name' => getenv('DB_DATABASE') ?: 'gestion_utilisateurs',
+    'db_host' => $dbHost,
+    'db_name' => getenv('DB_NAME') ?: 'gestion_utilisateurs',
     'db_user' => getenv('DB_USER') ?: 'root',
-    'db_pass' => getenv('DB_PASS') ?: '',
+    'db_pass' => getenv('DB_PASS') ?: 'root',
     'db_charset' => 'utf8mb4',
     'db_options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
