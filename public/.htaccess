@@ -1,4 +1,15 @@
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Laisser passer les requêtes API vers index.php
+    RewriteRule ^api/(.*)$ index.php [L,QSA]
+
+    # 2. Si le fichier ou dossier existe physiquement (ex: main.js, styles.css), le servir directement
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 3. Pour toutes les autres routes (SPA Angular), renvoyer vers index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
