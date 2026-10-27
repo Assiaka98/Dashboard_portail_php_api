@@ -1,5 +1,18 @@
-RewriteEngine On
-# Rediriger toutes les requêtes vers index.php si le fichier ou dossier n'existe pas
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Charger index.html d'Angular par défaut à la racine
+    DirectoryIndex index.html index.php
+
+    # 2. Laisser passer les requêtes API vers index.php
+    RewriteRule ^api/(.*)$ index.php [L,QSA]
+
+    # 3. Servir directement les fichiers statiques physiques (JS, CSS, images)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 4. Rediriger toutes les autres routes vers index.html (pour le routeur Angular)
+    RewriteRule ^ index.html [L]
+</IfModule>
