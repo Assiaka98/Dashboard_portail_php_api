@@ -10,5 +10,5 @@ $router->get('/api/users', [ApiUserController::class, 'index']);          // Lis
 $router->get('/api/users/{id}', [ApiUserController::class, 'show']);      // Affiche un utilisateur spécifique
 $router->post('/api/users', [ApiUserController::class, 'store']);         // Crée un utilisateur
 $router->put('/api/users/{id}', [ApiUserController::class, 'update']);    // Met à jour un utilisateur
-$router->delete('/api/users/{id}', [ApiUserController::class, 'archive']); // Soft delete (Archivage)
-// Soft delete : Archive l'utilisateur au lieu de le supprimer de la BDD
+$router->put('/api/users/{id}/archive', [ApiUserController::class, 'archive']);
+$router->put('/api/users/{id}/unarchive', [ApiUserController::class, 'unarchive']);

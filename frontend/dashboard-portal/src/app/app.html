@@ -1,82 +1,76 @@
-<div class="dashboard-container">
-  <h2>Tableau de bord - Gestion des Utilisateurs</h2>
+<div class="container mt-4">
+  <h2 class="mb-4">Tableau de bord - Gestion des Utilisateurs</h2>
 
-  <!-- Message d'erreur éventuel -->
-  <div *ngIf="errorMessage" class="error-banner">
+  <div *ngIf="errorMessage" class="alert alert-danger">
     {{ errorMessage }}
   </div>
 
-  <table class="user-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Matricule</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Email</th>
-        <th>Rôle (Admin)</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Affichage de la liste des utilisateurs -->
-      <tr *ngFor="let user of users">
-        <td>{{ user.id }}</td>
-        <td>{{ user.matricule }}</td>
-        <td>{{ user.nom }}</td>
-        <td>{{ user.prenom }}</td>
-        <td>{{ user.email }}</td>
-        <td>
-          <!-- Switch de rôle -->
-          <label class="switch">
-            <input
-              type="checkbox"
-              [checked]="user.role_etat == 2"
-              (change)="toggleRole(user)">
-            <span class="slider round"></span>
-          </label>
-          <span class="role-label">{{ user.role_etat == 2 ? 'Admin' : 'Utilisateur' }}</span>
-        </td>
-        <td>
-          <!-- Bouton Archiver : grisé si l'utilisateur est déjà archivé (etat == 0) -->
-          <button
-            class="btn-archive"
-            [disabled]="user.etat == 0"
-            (click)="openModal(user.id, 'archive')">
-            Archiver
-          </button>
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Matricule</th>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.matricule }}</td>
+          <td>{{ user.nom }}</td>
+          <td>{{ user.prenom }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <!-- Utilisation d'un checkbox ou d'un bouton simple pour le rôle à la place de mat-slide-toggle -->
+            <button class="btn btn-sm"
+                    [class.btn-success]="user.role_etat == 1"
+                    [class.btn-warning]="user.role_etat != 1"
+                    [disabled]="isArchived(user)"
+                    (click)="toggleRole(user)">
+              {{ user.role_etat == 1 ? 'Admin' : 'Utilisateur' }}
+            </button>
+          </td>
+          <td>
+            <!-- Bouton Archiver (ouvre la modale d'archivage) -->
+            <button class="btn btn-danger btn-sm me-2"
+                    [disabled]="isArchived(user)"
+                    (click)="openModal(user.id, 'archive')">
+              Archiver
+            </button>
 
-          <!-- Bouton Désarchiver : grisé si l'utilisateur est actif (etat != 0) -->
-          <button
-            class="btn-unarchive"
-            [disabled]="user.etat != 0"
-            (click)="openModal(user.id, 'unarchive')">
-            Désarchiver
-          </button>
-        </td>
-      </tr>
+            <!-- Bouton Désarchiver (ouvre la modale de désarchivage) -->
+            <button class="btn btn-secondary btn-sm"
+                    [disabled]="!isArchived(user)"
+                    (click)="openModal(user.id, 'unarchive')">
+              Désarchiver
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-      <!-- Message si aucun utilisateur n'est trouvé -->
-      <tr *ngIf="users.length === 0">
-        <td colspan="7" class="no-user">Aucun utilisateur trouvé.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- Popup Modale Moderne (Dynamique pour Archiver / Désarchiver) -->
-<div class="modal-overlay" *ngIf="isModalOpen">
-  <div class="modal-card">
-    <h3>{{ modalAction === 'archive' ? "Confirmation d'archivage" : "Confirmation de désarchivage" }}</h3>
-    <p>{{ modalAction === 'archive' ? "Voulez-vous vraiment archiver cet utilisateur ?" : "Voulez-vous vraiment désarchiver cet utilisateur ?" }}</p>
-    <div class="modal-actions">
-      <button class="btn-cancel" (click)="closeModal()">Annuler</button>
-      <button
-        [class.btn-confirm]="modalAction === 'archive'"
-        [class.btn-unarchive-confirm]="modalAction === 'unarchive'"
-        (click)="confirmAction()">
-        {{ modalAction === 'archive' ? "Archiver" : "Désarchiver" }}
-      </button>
+  <!-- Modale de confirmation simple -->
+  <div *ngIf="isModalOpen" class="modal show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmation</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir {{ modalAction === 'archive' ? 'archiver' : 'désarchiver' }} cet utilisateur ?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="confirmAction()">Confirmer</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

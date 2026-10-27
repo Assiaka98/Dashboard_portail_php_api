@@ -40,8 +40,20 @@ export class App implements OnInit {
     });
   }
 
+  // Vérifier si un utilisateur est archivé
+  isArchived(user: any): boolean {
+    return user.etat === 'archive' || user.date_archive !== null;
+  }
+
   toggleRole(user: any): void {
+    if (this.isArchived(user)) return; // Empêcher si archivé
     user.role_etat = user.role_etat == 2 ? 1 : 2;
+    
+    // Appel API pour mettre à jour le rôle si nécessaire
+    this.userService.updateUserRole(user.id, user.role_etat).subscribe({
+      error: (err) => console.error('Erreur mise à jour rôle', err)
+    });
+
     this.cdr.detectChanges();
   }
 
@@ -63,13 +75,22 @@ export class App implements OnInit {
 
     if (this.modalAction === 'archive') {
       console.log('Archivage de l’utilisateur ID :', this.selectedUserId);
-      // TODO: Appel API pour archiver
+      this.userService.archiveUser(this.selectedUserId).subscribe({
+        next: () => {
+          this.loadUsers();
+        },
+        error: (err) => console.error('Erreur lors de l’archivage', err)
+      });
     } else {
       console.log('Désarchivage de l’utilisateur ID :', this.selectedUserId);
-      // TODO: Appel API pour désarchiver
+      this.userService.unarchiveUser(this.selectedUserId).subscribe({
+        next: () => {
+          this.loadUsers();
+        },
+        error: (err) => console.error('Erreur lors du désarchivage', err)
+      });
     }
 
     this.closeModal();
-    this.loadUsers();
   }
 }
