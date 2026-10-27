@@ -9,3 +9,5 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient() // <-- Ajoutez ceci pour autoriser les requêtes API
   ]
 };
+// src/app/config.ts
+export const API_URL = 'https://dashboard-portail-php-api-50932ed4.platform-systalink.com/api';
