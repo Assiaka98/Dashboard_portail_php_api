@@ -18,14 +18,21 @@ public static function getAll() {
     }
     //il va chercher TOUS les utilisateurs actifs.
     //SELECT * FROM users = donne-moi tout dans la table users. fetchAll = ramène tout sous forme de tableau
-    public static function archive($id) {
-    $db = Database::getInstance();
-    // On met à jour l'état (par exemple 0 pour inactif) et on enregistre la date du jour
-    $stmt = $db->prepare("UPDATE users SET etat = 0, date_archive = NOW() WHERE id = ?");
+   public static function archive($id) {
+    global $pdo; // Assurez-vous que $pdo est accessible, ou utilisez votre classe Database
+    if (!$pdo) {
+        // Ajustez selon votre façon de récupérer PDO (ex: Database::getConnection())
+        $pdo = \App\Core\Database::getConnection(); 
+    }
+    $stmt = $pdo->prepare("UPDATE users SET date_archive = NOW() WHERE id = ?");
     return $stmt->execute([$id]);
 }
+
 public static function unarchive($id) {
     global $pdo;
+    if (!$pdo) {
+        $pdo = \App\Core\Database::getConnection();
+    }
     $stmt = $pdo->prepare("UPDATE users SET date_archive = NULL WHERE id = ?");
     return $stmt->execute([$id]);
 }
