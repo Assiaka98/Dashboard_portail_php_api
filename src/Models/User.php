@@ -18,15 +18,17 @@ public static function getAll() {
     }
     //il va chercher TOUS les utilisateurs actifs.
     //SELECT * FROM users = donne-moi tout dans la table users. fetchAll = ramène tout sous forme de tableau
-  public static function archive($id) {
+ public static function archive($id) {
         $db = Database::getInstance();
-        $stmt = $db->prepare("UPDATE users SET date_archive = NOW() WHERE id = ?");
+        // Mettez à jour la date et l'état (ex: 1 pour archivé)
+        $stmt = $db->prepare("UPDATE users SET etat = 1, date_archive = NOW() WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
     public static function unarchive($id) {
         $db = Database::getInstance();
-        $stmt = $db->prepare("UPDATE users SET date_archive = NULL WHERE id = ?");
+        // Remettez l'état à 0 (actif) et effacez la date d'archive
+        $stmt = $db->prepare("UPDATE users SET etat = 0, date_archive = NULL WHERE id = ?");
         return $stmt->execute([$id]);
     }
     /*supprime un user. 
