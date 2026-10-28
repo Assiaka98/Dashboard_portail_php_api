@@ -79,30 +79,34 @@ export class App implements OnInit {
   confirmAction(): void {
     if (this.selectedUserId === null) return;
 
+    console.log('Action déclenchée :', this.modalAction, 'pour l\'ID :', this.selectedUserId);
+
     if (this.modalAction === 'archive') {
-      console.log('Exécution de l’archivage pour l’ID :', this.selectedUserId);
       this.userService.archiveUser(this.selectedUserId).subscribe({
-        next: () => {
-          this.loadUsers(); // Recharge la liste pour refléter le changement
+        next: (res) => {
+          console.log('Réponse API Archivage réussie :', res);
+          this.loadUsers();
           this.closeModal();
         },
         error: (err) => {
-          console.error('Erreur lors de l’archivage', err);
+          console.error('Erreur API Archivage :', err);
           this.closeModal();
         }
       });
     } else {
-      console.log('Exécution du désarchivage pour l’ID :', this.selectedUserId);
       this.userService.unarchiveUser(this.selectedUserId).subscribe({
-        next: () => {
-          this.loadUsers(); // Recharge la liste pour refléter le changement
+        next: (res) => {
+          console.log('Réponse API Désarchivage réussie :', res);
+          this.loadUsers();
           this.closeModal();
         },
         error: (err) => {
-          console.error('Erreur lors du désarchivage', err);
+          console.error('Erreur API Désarchivage :', err);
           this.closeModal();
         }
       });
     }
   }
+
+
 }
