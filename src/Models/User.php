@@ -24,6 +24,11 @@ public static function getAll() {
     $stmt = $db->prepare("UPDATE users SET etat = 0, date_archive = NOW() WHERE id = ?");
     return $stmt->execute([$id]);
 }
+public static function unarchive($id) {
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE users SET date_archive = NULL WHERE id = ?");
+    return $stmt->execute([$id]);
+}
     /*supprime un user. 
     prepare("... ?") + execute([$id]) = sécurité. Ça évite les injections SQL. 
     Si un hacker met 1 OR 1=1, ça ne supprimera pas toute la base. Le ? protège.*/
