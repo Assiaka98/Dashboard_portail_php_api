@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  // Utilisation d'un chemin relatif pour éviter tout problème de domaine ou de CORS
   private apiUrl = '/api/users';
 
   constructor(private http: HttpClient) {}

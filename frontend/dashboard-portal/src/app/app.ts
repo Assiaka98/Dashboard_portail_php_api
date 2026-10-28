@@ -29,25 +29,22 @@ export class App implements OnInit {
     this.userService.getUsers().subscribe({
       next: (response: any) => {
         this.users = Array.isArray(response) ? response : (response.data || []);
-        console.log('Liste des utilisateurs chargée :', this.users);
         this.cdr.detectChanges();
       },
       error: (error: any) => {
-        console.error('Erreur lors du chargement des utilisateurs', error);
+        console.error('Erreur lors du chargement', error);
         this.errorMessage = 'Impossible de charger les utilisateurs depuis le serveur PHP.';
         this.cdr.detectChanges();
       }
     });
   }
 
-  // Vérifier si un utilisateur est archivé (basé sur etat == 1 ou date_archive non nulle)
   isArchived(user: any): boolean {
     return user.etat == 1 || user.date_archive !== null;
   }
 
-  // Gérer le changement de rôle
   toggleRole(user: any): void {
-    if (this.isArchived(user)) return; // Empêcher si l'utilisateur est archivé
+    if (this.isArchived(user)) return;
 
     const newRoleEtat = user.role_etat == 1 ? 0 : 1;
 
@@ -56,11 +53,10 @@ export class App implements OnInit {
         user.role_etat = newRoleEtat;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Erreur lors de la mise à jour du rôle', err)
+      error: (err) => console.error('Erreur rôle', err)
     });
   }
 
-  // Ouvrir la modale pour archiver ou désarchiver
   openModal(userId: number, action: 'archive' | 'unarchive'): void {
     this.selectedUserId = userId;
     this.modalAction = action;
@@ -68,45 +64,37 @@ export class App implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // Fermer la modale
   closeModal(): void {
     this.isModalOpen = false;
     this.selectedUserId = null;
     this.cdr.detectChanges();
   }
 
-  // Confirmer l'action d'archivage ou de désarchivage depuis la modale
   confirmAction(): void {
     if (this.selectedUserId === null) return;
 
-    console.log('Action déclenchée :', this.modalAction, 'pour l\'ID :', this.selectedUserId);
-
     if (this.modalAction === 'archive') {
       this.userService.archiveUser(this.selectedUserId).subscribe({
-        next: (res) => {
-          console.log('Réponse API Archivage réussie :', res);
+        next: () => {
           this.loadUsers();
           this.closeModal();
         },
         error: (err) => {
-          console.error('Erreur API Archivage :', err);
+          console.error('Erreur archivage', err);
           this.closeModal();
         }
       });
     } else {
       this.userService.unarchiveUser(this.selectedUserId).subscribe({
-        next: (res) => {
-          console.log('Réponse API Désarchivage réussie :', res);
+        next: () => {
           this.loadUsers();
           this.closeModal();
         },
         error: (err) => {
-          console.error('Erreur API Désarchivage :', err);
+          console.error('Erreur désarchivage', err);
           this.closeModal();
         }
       });
     }
   }
-
-
 }
