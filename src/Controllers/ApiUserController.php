@@ -111,20 +111,27 @@ class ApiUserController {
         }
         exit;
     }
-
     public function updateRole($id) {
         header('Content-Type: application/json; charset=UTF-8');
         try {
             $data = json_decode(file_get_contents('php://input'), true);
             $roleEtat = $data['role_etat'] ?? 1;
 
-            // Logique de mise à jour du rôle en base de données
-            // User::updateRole($id, $roleEtat);
+            // Appel effectif de la méthode du modèle
+            $updated = User::updateRole($id, $roleEtat);
 
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Rôle mis à jour avec succès.'
-            ], JSON_UNESCAPED_UNICODE);
+            if ($updated) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Rôle mis à jour avec succès.'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                http_response_code(404);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Utilisateur introuvable ou rôle identique.'
+                ], JSON_UNESCAPED_UNICODE);
+            }
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode([

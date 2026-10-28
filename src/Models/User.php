@@ -2,43 +2,41 @@
 namespace App\Models;
 use App\Core\Database;
 use PDO;
-//On dit à PHP où se trouve le fichier et on appelle ta connexion Database.php + PDO (l'outil sécurisé pour parler à MySQL).
+
 class User {
-public static function getAll() {
-    $db = Database::getInstance();
-    $stmt = $db->prepare("SELECT * FROM users");
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+
+    public static function getAll() {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM users");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function find($id) {
         $db = Database::getInstance();
-        $stmt = $db->prepare("SELECT * FROM users WHERE id = ? AND date_archive IS NULL");
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    //il va chercher TOUS les utilisateurs actifs.
-    //SELECT * FROM users = donne-moi tout dans la table users. fetchAll = ramène tout sous forme de tableau
- public static function archive($id) {
+
+    // Archiver : met l'état à 1 (archivé) et enregistre la date du jour
+    public static function archive($id) {
         $db = Database::getInstance();
-        // Mettez à jour la date et l'état (ex: 1 pour archivé)
         $stmt = $db->prepare("UPDATE users SET etat = 1, date_archive = NOW() WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
+    // Désarchiver : remet l'état à 0 (actif) et efface la date d'archive
     public static function unarchive($id) {
         $db = Database::getInstance();
-        // Remettez l'état à 0 (actif) et effacez la date d'archive
         $stmt = $db->prepare("UPDATE users SET etat = 0, date_archive = NULL WHERE id = ?");
         return $stmt->execute([$id]);
     }
-    /*supprime un user. 
-    prepare("... ?") + execute([$id]) = sécurité. Ça évite les injections SQL. 
-    Si un hacker met 1 OR 1=1, ça ne supprimera pas toute la base. Le ? protège.*/
-    public static function create($nom, $email) {
+
+    // Mettre à jour le rôle de l'utilisateur
+    public static function updateRole($id, $roleEtat) {
         $db = Database::getInstance();
-        $stmt = $db->prepare("INSERT INTO users (nom, email) VALUES (?, ?)");
-        return $stmt->execute([$nom, $email]);
+        $stmt = $db->prepare("UPDATE users SET role_etat = ? WHERE id = ?");
+        return $stmt->execute([$roleEtat, $id]);
     }
-    /**ajoute un nouvel utilisateur. 
-INSERT INTO = ajoute une ligne. Encore avec ? ? pour sécuriser le nom et l'email qui viennent du formulaire. */
 }
